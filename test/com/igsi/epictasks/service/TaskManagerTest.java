@@ -15,7 +15,7 @@ class TaskManagerTest {
     private HistoryManager historyManager;
 
     @BeforeEach
-    void setup() {
+    void beforeEach() {
         taskManager = Managers.getDefault();
         historyManager = Managers.getDefaultHistory();
     }
