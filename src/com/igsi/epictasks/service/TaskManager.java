@@ -1,170 +1,50 @@
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskStatus;
+package com.igsi.epictasks.service;
+
+import com.igsi.epictasks.model.Epic;
+import com.igsi.epictasks.model.Subtask;
+import com.igsi.epictasks.model.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.List;
 
-public class TaskManager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private int generatorId = 1;
+public interface TaskManager {
+    ArrayList<Task> getTasks();
 
-    public ArrayList<Task> getTasks() {
-        return new ArrayList<>(tasks.values());
-    }
+    ArrayList<Epic> getEpics();
 
-    public ArrayList<Epic> getEpics() {
-        return new ArrayList<>(epics.values());
-    }
+    ArrayList<Subtask> getSubtasks();
 
-    public ArrayList<Subtask> getSubtasks() {
-        return new ArrayList<>(subtasks.values());
-    }
+    void removeAllTasks();
 
-    public void removeAllTasks() {
-        tasks.clear();
-    }
+    void removeAllEpics();
 
-    public void removeAllEpics() {
-        for (Epic epic : epics.values()) {
-            ArrayList<Integer> subtaskIdList = epic.getSubtasks();
-            for (Integer subtaskId : subtaskIdList) {
-                subtasks.remove(subtaskId);
-            }
-        }
-        epics.clear();
-    }
+    void removeAllSubtasks();
 
-    public void removeAllSubtasks() {
-        for (Subtask subtask : subtasks.values()) {
-            Integer epicId = subtask.getEpicId();
-            Epic epic = epics.get(epicId);
-            ArrayList<Integer> subtasksIdList = epic.getSubtasks();
-            Integer subtaskId = subtask.getId();
-            subtasksIdList.remove(subtaskId);
-            updateStatus(epic);
-        }
-        subtasks.clear();
+    Task getTaskById(Integer id);
 
-    }
+    Epic getEpicById(Integer id);
 
-    public Task getTaskById(Integer id) {
-        return tasks.get(id);
-    }
+    Subtask getSubtaskById(Integer id);
 
-    public Epic getEpicById(Integer id) {
-        return epics.get(id);
-    }
+    Task createTask(Task task);
 
-    public Subtask getSubtaskById(Integer id) {
-        return subtasks.get(id);
-    }
+    Epic createEpic(Epic epic);
 
-    public Task createTask(Task task) {
-        task.setId(getNextId());
-        tasks.put(task.getId(), task);
-        return task;
-    }
+    Subtask createSubtask(Subtask subtask);
 
-    public Epic createEpic(Epic epic) {
-        epic.setId(getNextId());
-        epics.put(epic.getId(), epic);
-        return epic;
-    }
+    Task updateTask(Task task);
 
-    public Subtask createSubtask(Subtask subtask) {
-        subtask.setId(getNextId());
-        subtasks.put(subtask.getId(), subtask);
-        Epic epic = getEpicById(subtask.getEpicId());
-        epic.getSubtasks().add(subtask.getId());
-        updateStatus(epic);
-        return subtask;
-    }
+    Epic updateEpic(Epic newEpic);
 
-    public Task updateTask(Task task) {
-        tasks.put(task.getId(), task);
-        return task;
-    }
+    Subtask updateSubtask(Subtask newSubtask);
 
-    public Epic updateEpic(Epic newEpic) {
-        Epic oldEpic = getEpicById(newEpic.getId());
-        ArrayList<Integer> oldEpicSubtaskIdList = oldEpic.getSubtasks();
-        for (Integer oldEpicSubtaskId : oldEpicSubtaskIdList) {
-            if (!newEpic.getSubtasks().contains(oldEpicSubtaskId)) {
-                subtasks.remove(oldEpicSubtaskId);
-            }
-        }
-        epics.put(newEpic.getId(), newEpic);
-        updateStatus(newEpic);
-        return newEpic;
-    }
+    Task removeTaskById(Integer id);
 
-    public Subtask updateSubtask(Subtask newSubtask) {
-        Integer oldEpicId = subtasks.get(newSubtask.getId()).getEpicId();
-        Integer newEpicId = newSubtask.getEpicId();
-        if (!Objects.equals(oldEpicId, newEpicId)) {
-            epics.get(oldEpicId).getSubtasks().remove(newSubtask.getId());
-        }
-        createSubtask(newSubtask);
-        updateStatus(epics.get(newSubtask.getEpicId()));
-        return newSubtask;
-    }
+    void removeEpicById(Integer id);
 
-    public Task removeTaskById(Integer id) {
-        return tasks.remove(id);
-    }
+    void removeSubtaskById(Integer id);
 
-    public void removeEpicById(Integer id) {
-        Epic epic = getEpicById(id);
-        ArrayList<Integer> subtaskIdList = epic.getSubtasks();
-        for (Integer subtaskId : subtaskIdList) {
-            subtasks.remove(subtaskId);
-        }
-        epics.remove(id);
-    }
+    ArrayList<Subtask> getSubtaskByEpic(Epic epic);
 
-    public void removeSubtaskById(Integer id) {
-        Integer epicId = getSubtaskById(id).getEpicId();
-        Epic currentEpic = getEpicById(epicId);
-        currentEpic.getSubtasks().remove(id);
-        subtasks.remove(id);
-        updateStatus(currentEpic);
-    }
-
-    public ArrayList<Subtask> getSubtaskByEpic(Epic epic) {
-        ArrayList<Subtask> result = new ArrayList<>();
-        for (Integer element : epic.getSubtasks()) {
-            result.add(subtasks.get(element));
-        }
-        return result;
-    }
-
-    private Integer getNextId() {
-        return generatorId++;
-    }
-
-    private void updateStatus(Epic epic) {
-        TaskStatus epicStatus = epic.getTaskStatus();
-
-        if (epic.getSubtasks().isEmpty()) {
-            epicStatus = TaskStatus.NEW;
-        }
-        int s = epic.getSubtasks().size();
-        for (int i = 0; i < s; i++) {
-            TaskStatus initialStatus = subtasks.get(epic.getSubtasks().get(0)).getTaskStatus();
-            TaskStatus currentStatus = subtasks.get(epic.getSubtasks().get(i)).getTaskStatus();
-            if (currentStatus == initialStatus) {
-                epicStatus = currentStatus;
-            } else {
-                epicStatus = TaskStatus.IN_PROGRESS;
-            }
-        }
-        epic.setTaskStatus(epicStatus);
-    }
-
-
+    List<Task> getHistory();
 }

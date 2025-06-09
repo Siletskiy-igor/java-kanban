@@ -1,4 +1,6 @@
-package tasks;
+package com.igsi.epictasks.model;
+
+import com.igsi.epictasks.service.TaskStatus;
 
 import java.util.Objects;
 
@@ -44,6 +46,12 @@ public class Task {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public Task copy() {
+        Task copy = new Task(this.title, this.description, this.taskStatus);
+        copy.setId(this.id);
+        return copy;
     }
 
     @Override

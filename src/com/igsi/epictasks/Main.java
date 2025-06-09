@@ -1,12 +1,16 @@
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskStatus;
+package com.igsi.epictasks;
+
+import com.igsi.epictasks.model.Epic;
+import com.igsi.epictasks.model.Subtask;
+import com.igsi.epictasks.model.Task;
+import com.igsi.epictasks.service.Managers;
+import com.igsi.epictasks.service.TaskManager;
+import com.igsi.epictasks.service.TaskStatus;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         Task task1 = new Task("первая задача" , "описание первой задачи", TaskStatus.NEW);
         taskManager.createTask(task1);
@@ -16,7 +20,7 @@ public class Main {
 
         Epic epic1 = new Epic("первый эпик", "описание первого эпика");
         taskManager.createEpic(epic1);
-        Subtask subtask1 = new Subtask("первая подзадача", "описание первой подзадачи", TaskStatus.NEW, epic1.getId());
+        Subtask subtask1 = new Subtask("первая подзадача", "описание первой подзадачи", TaskStatus.IN_PROGRESS, epic1.getId());
         taskManager.createSubtask(subtask1);
         Subtask subtask2 = new Subtask("вторая подзадача", "описание второй подзадачи", TaskStatus.NEW, epic1.getId());
         taskManager.createSubtask(subtask2);
