@@ -17,6 +17,10 @@ public class InMemoryHistoryManager implements HistoryManager{
 
     @Override
     public void add(Task task) {
+        if (task == null) {
+            return;
+        }
+        
         Task copy;
         if (task instanceof Subtask) {
             copy = ((Subtask) task).copy();

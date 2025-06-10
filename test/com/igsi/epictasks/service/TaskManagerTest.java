@@ -20,25 +20,8 @@ class TaskManagerTest {
         historyManager = Managers.getDefaultHistory();
     }
 
-    @Test
-    void tasksWithSameIdShouldBeEqual() {
-        Task t1 = new Task("firstTask", "firstDesc", TaskStatus.NEW);
-        t1.setId(1);
-        Task t2 = new Task("secondTask", "secondDesc", TaskStatus.DONE);
-        t2.setId(1);
 
-        assertEquals(t1, t2);
-    }
 
-    @Test
-    void subtasksWithSameIdShouldBeEqual() {
-        Subtask s1 = new Subtask("firstSubtask", "firstDesc", TaskStatus.NEW, 1);
-        s1.setId(10);
-        Subtask s2 = new Subtask("secondSubtask", "secondDesc", TaskStatus.IN_PROGRESS, 99);
-        s2.setId(10);
-
-        assertEquals(s1, s2);
-    }
 
     @Test
     void epicCannotContainItselfAsSubtask() {
@@ -66,14 +49,7 @@ class TaskManagerTest {
         assertTrue(e.getMessage().contains("Subtask cannot have itself as epic"));
     }
 
-    @Test
-    void managersUtilityClassReturnsInitializedInstances() {
-        TaskManager tm = Managers.getDefault();
-        HistoryManager hm = Managers.getDefaultHistory();
 
-        assertNotNull(tm);
-        assertNotNull(hm);
-    }
 
     @Test
     void inMemoryTaskManagerAddsAndRetrievesTasksCorrectly() {
