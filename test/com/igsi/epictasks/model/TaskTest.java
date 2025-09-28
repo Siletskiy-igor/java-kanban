@@ -1,6 +1,6 @@
-package com.igsi.epictasks.service;
+package com.igsi.epictasks.model;
 
-import com.igsi.epictasks.model.Task;
+import com.igsi.epictasks.service.TaskStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
