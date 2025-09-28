@@ -21,8 +21,6 @@ class TaskManagerTest {
     }
 
 
-
-
     @Test
     void epicCannotContainItselfAsSubtask() {
         Epic epic = new Epic("Epic", "desc");
@@ -48,7 +46,6 @@ class TaskManagerTest {
         });
         assertTrue(e.getMessage().contains("Subtask cannot have itself as epic"));
     }
-
 
 
     @Test
