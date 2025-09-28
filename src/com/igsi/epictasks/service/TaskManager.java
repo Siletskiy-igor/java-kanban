@@ -4,7 +4,6 @@ import com.igsi.epictasks.model.Epic;
 import com.igsi.epictasks.model.Subtask;
 import com.igsi.epictasks.model.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
