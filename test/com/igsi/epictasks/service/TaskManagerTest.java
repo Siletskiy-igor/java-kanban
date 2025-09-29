@@ -21,8 +21,6 @@ class TaskManagerTest {
     }
 
 
-
-
     @Test
     void epicCannotContainItselfAsSubtask() {
         Epic epic = new Epic("Epic", "desc");
@@ -48,7 +46,6 @@ class TaskManagerTest {
         });
         assertTrue(e.getMessage().contains("Subtask cannot have itself as epic"));
     }
-
 
 
     @Test
@@ -90,7 +87,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void historyManagerStoresPreviousVersion() {
+    void historyManagerStoresNewVersionAfterChanging() {
         Task task = new Task("firstversion", "desc", TaskStatus.NEW);
         int id = taskManager.createTask(task).getId();
         taskManager.getTaskById(id);
@@ -104,14 +101,9 @@ class TaskManagerTest {
         List<Task> history = taskManager.getHistory();
         assertFalse(history.isEmpty());
 
-        Task first = history.getFirst();
         Task second = history.getLast();
 
-        assertEquals(2, history.size());
-        assertEquals("firstversion", first.getTitle());
-        assertEquals("desc", first.getDescription());
-        assertEquals(TaskStatus.NEW, first.getTaskStatus());
-
+        assertEquals(1, history.size());
         assertEquals("secondversion", second.getTitle());
         assertEquals("desc2", second.getDescription());
         assertEquals(TaskStatus.DONE, second.getTaskStatus());

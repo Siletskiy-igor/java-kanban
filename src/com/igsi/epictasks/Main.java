@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
 
-        Task task1 = new Task("первая задача" , "описание первой задачи", TaskStatus.NEW);
+        Task task1 = new Task("первая задача", "описание первой задачи", TaskStatus.NEW);
         taskManager.createTask(task1);
         Task task2 = new Task("вторая задача", "описание второй задачи", TaskStatus.IN_PROGRESS);
         taskManager.createTask(task2);
