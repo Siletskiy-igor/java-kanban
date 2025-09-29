@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
@@ -42,6 +43,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             tail = prev;
         }
+        node.next = null;
+        node.prev = null;
 
         nodeMap.remove(node.task.getId());
     }
@@ -49,8 +52,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (task == null) return;
-        remove(task.getId());  // удаляем старое вхождение
-        linkLast(task);        // добавляем в конец
+        Task taskCopy = task.copy();
+        remove(taskCopy.getId());
+        linkLast(taskCopy);
     }
 
     @Override
@@ -59,8 +63,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         removeNode(node);
     }
 
-    @Override
-    public List<Task> getHistory() {
+    private List<Task> getTasks() {
         List<Task> history = new ArrayList<>();
         Node current = head;
         while (current != null) {
@@ -68,5 +71,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             current = current.next;
         }
         return history;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return getTasks();
     }
 }
